@@ -3,9 +3,7 @@ using UnityEngine;
 public class BulletBehavior : MonoBehaviour, IAttacker
 {
     public float speed = 10f;
-    public float lifeTime = 2f;
-    public float detectionRadius = 1.5f;
-
+    public float lifeTime = 2f; 
     private float currentLifeTime;
     private BulletPool myPool;
 
@@ -16,35 +14,31 @@ public class BulletBehavior : MonoBehaviour, IAttacker
     {
         myPool = pool;
     }
-
     private void OnEnable()
     {
-        currentLifeTime = lifeTime;
+        currentLifeTime = lifeTime; 
     }
 
     private void Update()
     {
         transform.Translate(Vector3.up * speed * Time.deltaTime);
-
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
-        foreach (var hit in hitColliders)
-        {
-            if (hit.CompareTag("Enemy") && hit.gameObject.activeInHierarchy)
-            {
-                IDamageable target = hit.GetComponent<IDamageable>();
-                if (target != null)
-                {
-                    Attack(target);
-                }
-                ReturnToPool();
-                break;
-            }
-        }
-
         currentLifeTime -= Time.deltaTime;
         if (currentLifeTime <= 0)
         {
             ReturnToPool();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+        {
+            IDamageable target = collision.GetComponent<IDamageable>();
+            if (target != null)
+            {
+                Attack(target);
+            }
+            ReturnToPool(); 
         }
     }
 
@@ -59,10 +53,5 @@ public class BulletBehavior : MonoBehaviour, IAttacker
             myPool.ReturnToPool(gameObject);
         else
             gameObject.SetActive(false);
-    }
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }

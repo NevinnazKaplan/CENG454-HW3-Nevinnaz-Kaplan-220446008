@@ -1,50 +1,29 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     public BulletPool bulletPool;
-    public Transform firePoint;
-
-    private IWeapon currentWeapon;
-
-    private void Start()
-    {
-        currentWeapon = new BasicWeapon();
-
-        if (firePoint == null)
-        {
-            firePoint = transform;
-        }
-    }
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
             Shoot();
-        }
-        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
-        {
-            Shoot();
-        }
-        if (Keyboard.current != null && Keyboard.current.gKey.wasPressedThisFrame)
-        {
-            UpgradeWeapon();
         }
     }
 
     private void Shoot()
     {
-        if (currentWeapon != null && bulletPool != null)
+        if (bulletPool != null)
         {
-            currentWeapon.Fire(firePoint, bulletPool);
+            GameObject bullet = bulletPool.GetBullet();
+            bullet.transform.position = transform.position;
+            bullet.transform.rotation = transform.rotation;
+            BulletBehavior behavior = bullet.GetComponent<BulletBehavior>();
+            if (behavior != null)
+            {
+                behavior.SetPool(bulletPool);
+            }
         }
-    }
-
-    public void UpgradeWeapon()
-    {
-        currentWeapon = new DoubleShotDecorator(currentWeapon);
-        Debug.Log("Weapon Upgraded! Double Shooting.");
     }
 }

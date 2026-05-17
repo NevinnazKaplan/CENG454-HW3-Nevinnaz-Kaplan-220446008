@@ -17,7 +17,6 @@ public class BulletPool : MonoBehaviour
             pool.Enqueue(obj);
         }
     }
-
     public GameObject GetBullet()
     {
         if (pool.Count > 0)

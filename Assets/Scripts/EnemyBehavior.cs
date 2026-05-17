@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class EnemyBehavior : MonoBehaviour, IAttacker, IDamageable
 {
     public Transform targetCore;
@@ -7,24 +8,15 @@ public class EnemyBehavior : MonoBehaviour, IAttacker, IDamageable
     [SerializeField] private int damage = 10;
 
     public int Damage => damage;
-
     private IEnemyMovement movementStrategy;
 
     private void Start()
     {
         movementStrategy = GetComponent<IEnemyMovement>();
-
-        if (movementStrategy == null)
-        {
-            Debug.LogWarning("Enemy doesn't have a movement strategy attached!");
-        }
         if (targetCore == null)
         {
             GameObject coreObject = GameObject.Find("Core");
-            if (coreObject != null)
-            {
-                targetCore = coreObject.transform;
-            }
+            if (coreObject != null) targetCore = coreObject.transform;
         }
     }
 
@@ -39,6 +31,7 @@ public class EnemyBehavior : MonoBehaviour, IAttacker, IDamageable
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IDamageable damageableTarget = collision.GetComponent<IDamageable>();
+    
         if (damageableTarget != null && !collision.CompareTag("Bullet"))
         {
             Attack(damageableTarget);
