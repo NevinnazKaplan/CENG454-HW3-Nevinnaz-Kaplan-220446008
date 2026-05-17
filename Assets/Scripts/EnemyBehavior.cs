@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyBehavior : MonoBehaviour, IAttacker
+public class EnemyBehavior : MonoBehaviour, IAttacker, IDamageable
 {
     public Transform targetCore;
     public float moveSpeed = 3f;
@@ -35,11 +35,11 @@ public class EnemyBehavior : MonoBehaviour, IAttacker
             movementStrategy.Move(transform, targetCore, moveSpeed);
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IDamageable damageableTarget = collision.GetComponent<IDamageable>();
-
-        if (damageableTarget != null)
+        if (damageableTarget != null && !collision.CompareTag("Bullet"))
         {
             Attack(damageableTarget);
             gameObject.SetActive(false);
@@ -49,5 +49,11 @@ public class EnemyBehavior : MonoBehaviour, IAttacker
     public void Attack(IDamageable target)
     {
         target.TakeDamage(Damage);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        Debug.Log("Enemy hit!");
+        gameObject.SetActive(false); 
     }
 }
