@@ -21,9 +21,12 @@ public class UIManager : MonoBehaviour
             core.OnCoreDamaged -= UpdateHealthUI;
         }
     }
-
     private void UpdateHealthUI(int currentHealth)
     {
-        healthText.text = "Core Health: " + currentHealth;
+        if (healthText != null)
+        {
+            healthText.text = "Core Health: " + currentHealth;
+        }
+        Debug.Log("Core is damaged Remaining Health: " + currentHealth);
     }
 }
